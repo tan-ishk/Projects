@@ -1,0 +1,53 @@
+extends layout
+
+block content
+  .login-wrap
+    .login-card
+      .logo
+        span.logo-icon ⬡
+        span.logo-text NotWhatsapp
+      h1 Who are you?
+      p.sub Pick a name and a room to start chatting.
+
+      form#loginForm
+        .field
+          label(for='username') Username
+          input#username(
+            type='text'
+            placeholder='e.g. Tanishq'
+            maxlength='24'
+            autocomplete='off'
+            required
+          )
+        .field
+          label(for='room') Room
+          select#room
+            option(value='general') general
+        .field
+          label Custom room (optional)
+          input#customRoom(
+            type='text'
+            placeholder='my-room-name'
+            maxlength='32'
+            autocomplete='off'
+          )
+        #errorMsg.error-msg(style='display:none')
+        button(type='submit') Enter Chat →
+
+  script(src='/socket.io/socket.io.js')
+  script.
+    const socket = window._socket = io();
+    const form = document.getElementById('loginForm');
+    const errEl = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const customRoom = document.getElementById('customRoom').value.trim().toLowerCase().replace(/\s+/g,'-');
+      const room = customRoom || document.getElementById('room').value;
+      if (!username) return;
+      // Store for chat page
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('room', room);
+      window.location.href = '/chat';
+    });

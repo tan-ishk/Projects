@@ -1,0 +1,91 @@
+extends layout
+
+block content
+  #app
+
+    //- Sidebar
+    aside#sidebar
+      .sidebar-header
+        span.logo-icon ⬡
+        span.logo-text NotWhatsapp
+      
+      section.sidebar-section
+        .section-label Rooms
+        ul#roomList
+          each r in rooms
+            li.room-item(data-room=r)
+              span.hash #
+              span= r
+        .new-room
+          input#newRoomInput(type='text', placeholder='new-room…', maxlength='32')
+          button#createRoomBtn +
+
+      section.sidebar-section
+        .section-label Online
+        ul#userList
+
+    //- Main chat area
+    main#main
+
+      header#chatHeader
+        .room-info
+          span.hash-big #
+          span#currentRoom general
+        .header-actions
+          button#dmToggle(title='Send DM') ✉
+          span#connectionStatus.dot.dot--green
+
+      //- Messages
+      .messages-wrap
+        ul#messages
+
+      //- Typing indicator
+      #typingIndicator
+
+      //- OTP Confirmation modal
+      #otpModal.modal(style='display:none')
+        .modal-box
+          .modal-icon 
+          h3 Sensitive Info Detected
+          p.modal-desc This message may contain an OTP, password, or private data. Are you sure you want to send it to the group?
+          .modal-preview#otpPreview
+          .modal-actions
+            button#otpCancel.btn-secondary Cancel
+            button#otpConfirm.btn-danger Send Anyway
+
+      //- Troll warning toast
+      #trollToast.toast(style='display:none')
+        .toast-icon 
+        .toast-body
+          strong Easy there!
+          p#trollMsg
+
+      //- DM panel
+      #dmPanel.dm-panel(style='display:none')
+        .dm-header
+          span DM someone
+          button#dmClose ✕
+        .dm-fields
+          select#dmTarget
+            option(value='') Select user…
+          input#dmText(type='text', placeholder='Private message…')
+          button#dmSend Send
+
+      //- Input bar
+      footer#inputBar
+        label.attach-btn(for='fileInput' title='Attach file')
+          span 📎
+          input#fileInput(type='file', accept='image/*,video/*', style='display:none')
+        #filePreview(style='display:none')
+          span#filePreviewName
+          button#filePreviewClear ✕
+        input#messageInput(
+          type='text'
+          placeholder='Message #general…'
+          autocomplete='off'
+          maxlength='1000'
+        )
+        button#sendBtn Send
+
+  script(src='/socket.io/socket.io.js')
+  script(src='/js/chat.js')
